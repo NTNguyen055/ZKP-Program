@@ -1,0 +1,161 @@
+Chapter 1 và 2: Ẩn giấu, các cách thức ẩn giấu và khái niệm liên quan
+
+* Xây dựng 1 ctrinh AES 
+
+1 tình huống xác thực người dùng thực tế cho 1 server nội bộ:
+Công ty muốn xây dựng một hệ thống xác thực người dùng đơn giản cho nhân viên nội bộ. Dữ liệu như tên người dùng, thời gian đăng nhập, vai trò
+
+1. Kiến thức cần nắm bắt:
+
+* AES: là một thuật toán mã hóa khối (block cipher) được sử dụng rộng rãi để bảo vệ dữ liệu trong các hệ thống thông tin
+
+ - Loại mã hóa: Đối xứng (Symmetric-key cryptography).
+
+ - Mã hóa khối: Dữ liệu được chia thành các khối 128 bit.
+
+ - Độ dài khóa: 128, 192 hoặc 256 bit.
+
+ - AES sử dụng cấu trúc Substitution–Permutation Network (SPN) với nhiều vòng (rounds) biến đổi
+ 
+ - Tốc độ mã hóa nhanh, khả năng triển khai và tích hợp vào hệ thống đơn giản, được tiêu chuẩn hóa toàn cầ
+
+ - Công dụng thực tế: bảo mật truyền thống https (tls/ssl), VPN, ssh/sftp; mã hóa dữ liệu lưu trữ tệp tin, cloud storage; bảo mật thiết bị di động IoT, chip bảo mật; hệ thống xác thực như mail, session, cookie, tài khoản ngân hàng tài chính.
+
+* AES - GCM: là một chế độ hoạt động (mode of operation) cho thuật toán mã hóa AES, được thiết kế để cung cấp:
+
+✅ Confidentiality (bảo mật) 
+ 
+✅ Integrity (toàn vẹn dữ liệu) 
+
+✅ Authentication (xác thực dữ liệu)
+
+Cấu thành:
+
+ - AES dùng trong chế độ Counter (CTR) → mã hóa (encrypt).
+
+ - GMAC (Galois Message Authentication Code) → xác thực (authenticate).
+
+-> Kết hợp lại: mã hóa + xác thực (AEAD – Authenticated Encryption with Associated Data).
+
+Nonce: 
+
+Key
+
+Cookie
+
+SHA256
+
+Base64
+
+Bcrypt
+
+Mã hóa và giải mã
+
+Tính thực tế (Flask server-side)
+
+Python
+
+* Chữ ký số Digital Signatures
+
+-------------------------------------------
+Chapter 2
+
+* Symmitric vs Asymmitric (mã hóa đối xứng và bất đối xứng)
+
+- kết hợp cả 2 -> Diffie - Hellman
+
+- ECDH, ECIES, ECDSA
+
+- Stack: ECDH -> AES, ECIES for extras, ECDSA for trust
+
+* Mở rộng ra thuật toán mã hóa RSA
+
+-------------------------------------------
+Chapter 3: Tamper-Proof Ledger at Scale
+
+Review:
+1/ Hash refresher
+2/ Merkle-tree 
+3/ Brief note
+4/ Full chain: leaf hash -> Merkle hash ->
+
+1. Hash Funtion Essentials
+
+Collision Resistance
+ 
+Second Pre-image Resistance
+
+Avalanche Effect
+
+2. Merkle tree
+
+Merkle Tree (còn gọi là Hash Tree) là một cây nhị phân trong đó:
+
+ - Mỗi lá (leaf node) là hash của dữ liệu gốc.
+
+ - Mỗi nút cha (non-leaf node) là hash của hai con.
+
+ - Nút cao nhất là Merkle Root, đại diện cho toàn bộ cây.
+
+✅ Mục tiêu: Tóm gọn toàn bộ tập dữ liệu lớn bằng một hash duy nhất, nhưng vẫn cho phép xác minh chính xác, nhanh chóng từng phần nhỏ bên trong.
+
+* Tính chất mật mã học của Merkle Tree
+
+Integrity: Nếu 1 bit dữ liệu thay đổi, Merkle Root cũng thay đổi
+
+Tamper-evident: Dễ dàng phát hiện nếu có thay đổi ở bất kỳ nhánh nào
+
+Efficient Verification: Xác minh một phần dữ liệu chỉ cần O(log n) hash
+
+Data Minimization: Không cần tất cả dữ liệu để xác minh một phần
+
+Collision-resistant: Dựa vào tính chất của hash function (SHA-256, SHA-3...)
+
+--------------------------------------------------
+Chapter 4: Show the Total, Hide Each Gift
+
+1. Definition
+
+* Commitment Schemes
+
+- Hiding (perfect): Cam kết không tiết lộ giá trị thật trước khi mở.
+
+- Binding (Computational): Bên cam kết không thể thay đổi giá trị sau khi đã tạo cam kết.
+
+- Additive homomorphism: Bạn có thể cộng các giá trị đã cam kết bằng cách nhân các commitment.
+
+- Tương thích ZKP: Cam kết các dữ liệu đầu vào mà không tiết lộ nội dung.
+
+* Giai đoạn		Mục đích
+
+Commit (Cam kết)	Bên cam kết tạo một cam kết 𝐶  từ giá trị m  và dữ liệu ngẫu nhiên r, gửi C cho bên nhận mà không tiết lộ m
+
+Reveal (Mở cam kết)	Bên cam kết tiết lộ m và r, bên nhận kiểm tra tính hợp lệ của cam kết C
+
+* Bài toán:
+
+C1 = g^D1 h^r1, C2 = g^D2 h^r2, C3 = g^D3 h^r3
+
+Commitment cho C123 = C1C2C3 = g^(D1+D2+D3).h(r1+r2+r3)
+
+Open: (D123 = D1 + D2 + D3, r123 = r1 + r2 + r3)  -> check g^D123.h^r123 ?= C123
+
+--------------------------------------------------
+First Taste of ZKP with Circom
+
+- Circuit: a set of arithmetic contstrains over a prime field
+
+- Witness: concrete values satisfying every constraint
+
+Cho bài toán: y = x^3 + 1
+
+- Compile: Circom -> Rank-1 Constraint System (R1CS) (a*b-c = 0) -> chuyển thành dạng ma trận
+
+- Prove: R1CS + witness -> succinct proof
+
+- Verify: proof + public signals -> accept / reject
+
+-> Hiểu về các khái niệm, các mặt của từng thành phần trên
+-> Sử dụng ngôn ngữ Circom viết ra 1 R1CS, từ đó tạo ra 1 cái proof + public signals
+
+- Tìm hiểu Circom (syntax, operators,...)
