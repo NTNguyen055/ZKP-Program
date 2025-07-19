@@ -1,0 +1,32 @@
+pragma circom 2.1.6;
+
+include "circomlib/poseidon.circom";
+// include "https://github.com/0xPARC/circom-secp256k1/blob/master/circuits/bigint.circom";
+
+template CheckPower() {
+    signal input x;
+    signal input y;
+    signal output out;
+
+    signal x2;
+    signal x4;
+
+    // x^2
+    x2 <== x * x;
+
+    // x^4
+    x4 <== x2 * x2;
+
+    // out = x^8
+    out <== x4 * x4;
+
+    // Check out == y
+    out === y;
+}
+
+component main { public [y] } = CheckPower();
+
+/* INPUT = {
+    "x": "2",
+    "y": "256"
+} */
